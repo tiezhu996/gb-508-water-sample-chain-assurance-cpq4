@@ -52,6 +52,14 @@ func (s *Store[T]) Get(ctx context.Context, id uint) (T, error) {
 	return item, err
 }
 
+// FindOne locates a single record by a whitelisted column name. Callers only
+// pass internal constant field names, never raw user input.
+func (s *Store[T]) FindOne(ctx context.Context, field, value string) (T, error) {
+	var item T
+	err := s.db.WithContext(ctx).Where(field+" = ?", value).First(&item).Error
+	return item, err
+}
+
 func (s *Store[T]) Create(ctx context.Context, item *T) error {
 	return s.db.WithContext(ctx).Create(item).Error
 }

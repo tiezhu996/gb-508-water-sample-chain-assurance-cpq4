@@ -212,17 +212,30 @@ func seedResultReview(ctx context.Context, db *gorm.DB) error {
 		{BaseModel: model.BaseModel{Code: "RR-001", Name: "结果复核示例一", Status: "draft", Version: 1,
 			Description: "用于启动验证和主要流程演示的结果复核记录"}, Facility: "水质检测样本链路审核区域1", Owner: "运行一组",
 			Category: "常规", RiskLevel: "low", MetricValue: 12.5, MetricUnit: "unit",
-			EffectiveAt: now.Add(0 * time.Hour), Evidence: "已完成基础证据核对", RelatedCode: "AM-001"},
+			EffectiveAt: now.Add(0 * time.Hour), Evidence: "已完成基础证据核对", RelatedCode: "REL-508-03",
+			SampleCode: "LS-003", MethodCode: "AM-003"},
 
 		{BaseModel: model.BaseModel{Code: "RR-002", Name: "结果复核示例二", Status: "peer_review", Version: 1,
 			Description: "用于启动验证和主要流程演示的结果复核记录"}, Facility: "水质检测样本链路审核区域2", Owner: "质量复核组",
 			Category: "重点", RiskLevel: "medium", MetricValue: 25.0, MetricUnit: "%",
-			EffectiveAt: now.Add(3 * time.Hour), Evidence: "已完成基础证据核对", RelatedCode: "AM-002", ReviewRequestedBy: "operator"},
+			EffectiveAt: now.Add(3 * time.Hour), Evidence: "已完成基础证据核对", RelatedCode: "REL-508-03",
+			SampleCode: "LS-003", SampleBatchCode: "SB-003", SampleStatus: "testing",
+			MethodCode: "AM-003", MethodVersion: 1, ReviewRequestedBy: "operator"},
 
 		{BaseModel: model.BaseModel{Code: "RR-003", Name: "结果复核示例三", Status: "signed", Version: 1,
 			Description: "用于启动验证和主要流程演示的结果复核记录"}, Facility: "水质检测样本链路审核区域3", Owner: "安全主管组",
 			Category: "复核", RiskLevel: "high", MetricValue: 37.5, MetricUnit: "score",
-			EffectiveAt: now.Add(6 * time.Hour), Evidence: "已完成基础证据核对", RelatedCode: "AM-003", ReviewRequestedBy: "operator", PeerReviewedBy: "reviewer", SignedBy: "reviewer"},
+			EffectiveAt: now.Add(6 * time.Hour), Evidence: "已完成基础证据核对", RelatedCode: "REL-508-03",
+			SampleCode: "LS-003", SampleBatchCode: "SB-003", SampleStatus: "testing",
+			MethodCode: "AM-003", MethodVersion: 1, ReviewRequestedBy: "operator", PeerReviewedBy: "reviewer", SignedBy: "reviewer"},
+
+		{BaseModel: model.BaseModel{Code: "RR-004", Name: "结果复核示例四（已拦截）", Status: "peer_review", Version: 1,
+			Description: "提交复核后样本暂停，签发时被拦截留档，需新建复核单"}, Facility: "水质检测样本链路审核区域2", Owner: "质量复核组",
+			Category: "重点", RiskLevel: "medium", MetricValue: 25.0, MetricUnit: "%",
+			EffectiveAt: now.Add(3 * time.Hour), Evidence: "已完成基础证据核对", RelatedCode: "REL-508-02",
+			SampleCode: "LS-002", SampleBatchCode: "SB-002", SampleStatus: "testing",
+			MethodCode: "AM-002", MethodVersion: 1, BlockedReason: "样本 LS-002 状态为 accepted，已不在检",
+			ReviewRequestedBy: "operator"},
 	}
 	return db.WithContext(ctx).Create(&items).Error
 }

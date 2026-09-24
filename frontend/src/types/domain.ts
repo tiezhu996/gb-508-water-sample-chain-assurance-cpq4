@@ -15,6 +15,12 @@ export interface DomainRecord {
   effectiveAt: string;
   evidence: string;
   relatedCode: string;
+  sampleCode?: string;
+  sampleBatchCode?: string;
+  sampleStatus?: string;
+  methodCode?: string;
+  methodVersion?: number;
+  blockedReason?: string;
   reviewRequestedBy?: string;
   peerReviewedBy?: string;
   signedBy?: string;

@@ -46,7 +46,7 @@ printf '%s' "$created" | jq -e --arg status "$initial_status" '.data.status == $
 transition=$(printf '{"status":"%s","expectedVersion":%s,"reason":"automated runtime validation"}' "$next_status" "$version")
 curl -fsS -X POST "http://127.0.0.1:${BACKEND_PORT}/api/$resource/$id/transition" -H "Authorization: Bearer $token" -H 'Content-Type: application/json' -d "$transition" | jq -e --arg status "$next_status" '.data.status == $status' >/dev/null
 review_code="REVIEW-SMOKE-$(date +%s)-$$"
-review_payload=$(printf '{"code":"%s","name":"Dual reviewer validation","description":"Validates the required peer-review workflow","facility":"Validation Lab","owner":"operator","category":"smoke","riskLevel":"low","metricValue":1,"metricUnit":"unit","effectiveAt":"%s","evidence":"scripts/validate.sh","relatedCode":"AM-001"}' "$review_code" "$now")
+review_payload=$(printf '{"code":"%s","name":"Dual reviewer validation","description":"Validates the required peer-review workflow","facility":"Validation Lab","owner":"operator","category":"smoke","riskLevel":"low","metricValue":1,"metricUnit":"unit","effectiveAt":"%s","evidence":"scripts/validate.sh","relatedCode":"REL-508-03","sampleCode":"LS-003","methodCode":"AM-003"}' "$review_code" "$now")
 review_created=$(curl -fsS -X POST "http://127.0.0.1:${BACKEND_PORT}/api/reviews" -H "Authorization: Bearer $token" -H 'Content-Type: application/json' -d "$review_payload")
 review_id=$(printf '%s' "$review_created" | jq -er '.data.id')
 review_version=$(printf '%s' "$review_created" | jq -er '.data.version')
@@ -56,6 +56,7 @@ direct_status=$(curl -sS -o /dev/null -w '%{http_code}' -X POST "http://127.0.0.
 peer_request=$(printf '{"status":"peer_review","expectedVersion":%s,"reason":"submit for independent review"}' "$review_version")
 peer_result=$(curl -fsS -X POST "http://127.0.0.1:${BACKEND_PORT}/api/reviews/$review_id/transition" -H "Authorization: Bearer $token" -H 'Content-Type: application/json' -d "$peer_request")
 peer_version=$(printf '%s' "$peer_result" | jq -er '.data.version')
+printf '%s' "$peer_result" | jq -e '.data.sampleStatus == "testing" and .data.sampleBatchCode == "SB-003" and (.data.methodVersion >= 1)' >/dev/null
 sign_request=$(printf '{"status":"signed","expectedVersion":%s,"reason":"independent result approval"}' "$peer_version")
 self_sign_status=$(curl -sS -o /dev/null -w '%{http_code}' -X POST "http://127.0.0.1:${BACKEND_PORT}/api/reviews/$review_id/transition" -H "Authorization: Bearer $token" -H 'Content-Type: application/json' -d "$sign_request")
 [ "$self_sign_status" = "422" ]

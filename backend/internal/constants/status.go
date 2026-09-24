@@ -15,6 +15,15 @@ const (
 
 var AllSampleState = []string{"received", "accepted", "testing", "hold", "disposed"}
 
+type AssayMethodState string
+
+const (
+	AssayMethodStateDraft     AssayMethodState = "draft"
+	AssayMethodStateValidated AssayMethodState = "validated"
+	AssayMethodStateActive    AssayMethodState = "active"
+	AssayMethodStateRetired   AssayMethodState = "retired"
+)
+
 type ReviewState string
 
 const (

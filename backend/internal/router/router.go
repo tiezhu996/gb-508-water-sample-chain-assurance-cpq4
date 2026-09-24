@@ -35,7 +35,7 @@ func New(cfg config.Config, db *gorm.DB, redisClient *redis.Client, logger *slog
 	samplingBatchService := service.NewSamplingBatchService(samplingBatchRepository, securityService)
 	labSampleService := service.NewLabSampleService(labSampleRepository, securityService)
 	assayMethodService := service.NewAssayMethodService(assayMethodRepository, securityService)
-	resultReviewService := service.NewResultReviewService(resultReviewRepository, securityService)
+	resultReviewService := service.NewResultReviewService(resultReviewRepository, labSampleRepository, assayMethodRepository, samplingBatchRepository, securityService)
 	samplingBatchHandler := handler.NewSamplingBatchHandler(samplingBatchService)
 	labSampleHandler := handler.NewLabSampleHandler(labSampleService)
 	assayMethodHandler := handler.NewAssayMethodHandler(assayMethodService)

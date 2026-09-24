@@ -16,6 +16,12 @@ type ResultReview struct {
 	EffectiveAt       time.Time `json:"effectiveAt"`
 	Evidence          string    `json:"evidence" gorm:"size:2000"`
 	RelatedCode       string    `json:"relatedCode" gorm:"size:64;index"`
+	SampleCode        string    `json:"sampleCode" gorm:"size:64;index"`
+	SampleBatchCode   string    `json:"sampleBatchCode" gorm:"size:64"`
+	SampleStatus      string    `json:"sampleStatus" gorm:"size:40"`
+	MethodCode        string    `json:"methodCode" gorm:"size:64;index"`
+	MethodVersion     uint      `json:"methodVersion"`
+	BlockedReason     string    `json:"blockedReason" gorm:"size:500"`
 	ReviewRequestedBy string    `json:"reviewRequestedBy" gorm:"size:80;index"`
 	PeerReviewedBy    string    `json:"peerReviewedBy" gorm:"size:80;index"`
 	SignedBy          string    `json:"signedBy" gorm:"size:80;index"`
