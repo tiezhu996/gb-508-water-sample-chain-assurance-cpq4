@@ -92,7 +92,7 @@ func (h *ResultReviewHandler) transition(c *gin.Context) {
 		return
 	}
 	if (input.Status == "signed" || input.Status == "rejected") && roleFromContext(c) != "reviewer" && roleFromContext(c) != "admin" {
-		util.Fail(c, http.StatusForbidden, "reviewer_required", "reviewer or admin role is required")
+		util.Fail(c, http.StatusForbidden, "reviewer_required", "仅复核员或管理员可签发、驳回结果复核")
 		return
 	}
 	item, err := h.service.Transition(c.Request.Context(), id, input, actorFromContext(c), requestIDFromContext(c))
@@ -105,7 +105,7 @@ func (h *ResultReviewHandler) transition(c *gin.Context) {
 
 func (h *ResultReviewHandler) remove(c *gin.Context) {
 	if roleFromContext(c) != "admin" {
-		util.Fail(c, http.StatusForbidden, "forbidden", "admin role is required")
+		util.Fail(c, http.StatusForbidden, "forbidden", "仅管理员可删除复核单")
 		return
 	}
 	id, ok := parseID(c)

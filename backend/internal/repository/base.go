@@ -52,6 +52,17 @@ func (s *Store[T]) Get(ctx context.Context, id uint) (T, error) {
 	return item, err
 }
 
+// ListByIDs loads a set of records in one query. It is used by the review
+// service to re-check the live sample and method states behind review snapshots.
+func (s *Store[T]) ListByIDs(ctx context.Context, ids []uint) ([]T, error) {
+	items := make([]T, 0)
+	if len(ids) == 0 {
+		return items, nil
+	}
+	err := s.db.WithContext(ctx).Where("id IN ?", ids).Find(&items).Error
+	return items, err
+}
+
 func (s *Store[T]) Create(ctx context.Context, item *T) error {
 	return s.db.WithContext(ctx).Create(item).Error
 }

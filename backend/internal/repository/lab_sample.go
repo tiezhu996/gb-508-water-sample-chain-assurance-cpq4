@@ -12,6 +12,7 @@ import (
 type LabSampleRepository interface {
 	List(context.Context, dto.PageQuery) (Page[model.LabSample], error)
 	Get(context.Context, uint) (model.LabSample, error)
+	ListByIDs(context.Context, []uint) ([]model.LabSample, error)
 	Create(context.Context, *model.LabSample) error
 	Update(context.Context, uint, uint, *model.LabSample) error
 	Delete(context.Context, uint) error
@@ -31,6 +32,9 @@ func (r *labSampleRepository) List(ctx context.Context, q dto.PageQuery) (Page[m
 }
 func (r *labSampleRepository) Get(ctx context.Context, id uint) (model.LabSample, error) {
 	return r.store.Get(ctx, id)
+}
+func (r *labSampleRepository) ListByIDs(ctx context.Context, ids []uint) ([]model.LabSample, error) {
+	return r.store.ListByIDs(ctx, ids)
 }
 func (r *labSampleRepository) Create(ctx context.Context, item *model.LabSample) error {
 	return r.store.Create(ctx, item)

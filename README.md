@@ -34,6 +34,9 @@ docker compose down -v --remove-orphans
 - JWT 登录和 viewer/operator/reviewer/admin 四级 RBAC；路由守卫和操作按钮与后端角色中间件保持一致。
 - 所有状态变化使用乐观锁并写入不可覆盖的审计日志。
 - 结果签发强制经过 `draft -> peer_review -> signed`，提交复核者不能签发自己的结果，签发仅允许 reviewer/admin 角色。
+- 复核单必须选择在检样本（`testing`）和现行方法（`active`），不再只填关联编码；提交复核时冻结样本批次、样本状态和方法版本（`sampleBatch/sampleSnapshot/methodSnapshot` 快照字段）。
+- 签发前再次核对依据：样本暂停（`hold`）、处置（`disposed`）或记录缺失，方法换版（版本变化）或退役（`retired`）时拦截签发，写入 `sign_blocked` 审核记录，并将旧单锁定留档、不可再签发或驳回；补正后只能新建复核单读取最新状态。
+- 复核列表与详情返回实时 `basis` 核对结果（依据是否有效、被挡原因、当前样本/方法状态），复核页展示提交依据与过期提示，列表直接给出被挡原因。
 - 请求 ID、结构化日志、全局错误映射和 Redis 分布式限流。
 - 提供脱敏运行配置、当前会话、审计汇总和单实体审计历史接口。
 - 业务工作台支持查询、新建、状态推进、风险标识及操作审计查看；`ChainBadge`/`ChainTimeline` 复用于批次和样本页，`MethodSelector` 复用于方法和复核页，空结果统一使用 `EmptyState`。

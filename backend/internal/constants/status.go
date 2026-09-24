@@ -15,6 +15,17 @@ const (
 
 var AllSampleState = []string{"received", "accepted", "testing", "hold", "disposed"}
 
+type AssayMethodState string
+
+const (
+	AssayMethodStateDraft     AssayMethodState = "draft"
+	AssayMethodStateValidated AssayMethodState = "validated"
+	AssayMethodStateActive    AssayMethodState = "active"
+	AssayMethodStateRetired   AssayMethodState = "retired"
+)
+
+var AllAssayMethodState = []string{"draft", "validated", "active", "retired"}
+
 type ReviewState string
 
 const (
@@ -58,4 +69,22 @@ var ResultReviewTransitions = map[string]map[string]bool{
 func CanTransition(graph map[string]map[string]bool, from, to string) bool {
 	targets, exists := graph[from]
 	return exists && targets[to]
+}
+
+// Chinese status labels back review-basis prompts so the workbench and audit
+// records always show the same human-readable state wording.
+var statusLabels = map[string]string{
+	"received": "已接收", "accepted": "已受理", "testing": "在检", "hold": "暂停", "disposed": "已处置",
+	"draft": "草稿", "validated": "已验证", "active": "现行", "retired": "已退役",
+	"peer_review": "待复核", "signed": "已签发", "rejected": "已驳回",
+	"planned": "计划中", "collecting": "采样中", "closed": "已关闭",
+}
+
+// StatusLabel returns the Chinese wording for a domain status, falling back
+// to the raw value for unknown states.
+func StatusLabel(status string) string {
+	if label, ok := statusLabels[status]; ok {
+		return label
+	}
+	return status
 }

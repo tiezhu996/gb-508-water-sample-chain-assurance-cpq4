@@ -3,7 +3,9 @@ package dto
 import "time"
 
 // CreateResultReview is the public write contract for 结果复核. Status is deliberately
-// omitted so callers cannot bypass the service state machine.
+// omitted so callers cannot bypass the service state machine. SampleID and
+// MethodID select the 在检样本 and 使用的方法 directly instead of a free-text
+// related code; the submission snapshot is captured by the service.
 type CreateResultReview struct {
 	Code        string    `json:"code" binding:"required,min=2,max=64"`
 	Name        string    `json:"name" binding:"required,min=2,max=160"`
@@ -17,6 +19,8 @@ type CreateResultReview struct {
 	EffectiveAt time.Time `json:"effectiveAt" binding:"required"`
 	Evidence    string    `json:"evidence" binding:"max=2000"`
 	RelatedCode string    `json:"relatedCode" binding:"max=64"`
+	SampleID    uint      `json:"sampleId" binding:"required,gt=0"`
+	MethodID    uint      `json:"methodId" binding:"required,gt=0"`
 }
 
 type UpdateResultReview struct {
@@ -32,4 +36,6 @@ type UpdateResultReview struct {
 	EffectiveAt     time.Time `json:"effectiveAt" binding:"required"`
 	Evidence        string    `json:"evidence" binding:"max=2000"`
 	RelatedCode     string    `json:"relatedCode" binding:"max=64"`
+	SampleID        uint      `json:"sampleId" binding:"required,gt=0"`
+	MethodID        uint      `json:"methodId" binding:"required,gt=0"`
 }
